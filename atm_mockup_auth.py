@@ -4,13 +4,14 @@
 #import datetime
 import random
 import validation
+import database
 #dateTime = datetime.datetime.now()
 
-database = {
+""" database = {
     7891789: ['Seyi', 'Super', 'seyi@email.com', 'passwordSeyi', 8620],
     4856947: ['Mike', 'Duper', 'mike@email.com', 'passwordMike', 34],
     2559367: ['Love', 'Rumer', 'love@email.com', 'passwordLove', 956]
-    }
+    } """
 
 
 def init():
@@ -36,7 +37,8 @@ def login():
         print('Invalid account or password')
         login()
     
-    else: 
+    else:
+        print('Account number invalid') 
         init()
 """                 else:
                     print('Your password is incorrect.')
@@ -54,18 +56,22 @@ def register():
     password = input('Password: \n')
     balance = 0
 
-    try:
-        acct_num = createAcctNum()
-    except OverflowError:
-        print('Account could not be created')
-        init()
+    acct_num = createAcctNum()
     
     #print('\nThe current date and time is: ')
     #print(dateTime, end="\n\n")
-    database[acct_num] = [first_name, last_name, password, email, balance]
-    print('Welcome %s %s, your new account number is %d' %(first_name, last_name, acct_num))
-    print('Please log in to continue: \n')
-    login()
+    #database[acct_num] = [first_name, last_name, password, email, balance]
+    check_for_acct = database.create(acct_num, [first_name, last_name, password, email, balance])
+
+    # Use the database module to create a new user record
+    # Create a file
+    if check_for_acct:
+        print('Welcome %s %s, your new account number is %d' %(first_name, last_name, acct_num))
+        print('Please log in to continue: \n')
+        login()
+    else:
+        print('Something went wrong, please try again')
+        register()
 
 
 def createAcctNum():
