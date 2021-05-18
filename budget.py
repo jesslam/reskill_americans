@@ -1,81 +1,42 @@
-class Budget:
+class Category:
 
-    def __init__(self, savings_acct_bal, checking_acct_bal):
+    def __init__(self, category, amount):
         # initialize the expense type and amount of expense 
-        # self.account_type = account_type
-        self.savings_acct_bal = savings_acct_bal
-        self.checking_acct_bal = checking_acct_bal
-        #self.amount = amount
+        self.category = category
+        self.amount = amount
 
-    def check_balance(self, account_type):
+    def display_balance(self):
+        return ('Your {} balance is {}.'.format(self.category, self.amount))
+
+    def check_balance(self, amount):
         # check the current account balance
-        if account_type == 'savings':
-            print(self.savings_acct_bal)
-        elif account_type == 'checking':
-            print(self.checking_acct_bal)
+        if self.amount >= amount:
+            return True
         else:
-            print('Please select \"savings\" or \"checking\"')
+            return False
     
-    def deposit(self, account_type, amount):
+    def deposit(self, amount):
         # add a dollar amount to the existing account balance
-        if account_type == 'savings':
-            self.savings_acct_bal += amount
-        elif account_type == 'checking':
-            self.checking_acct_bal += amount
-        else:
-            print('Please select \"savings\" or \"checking\"')
+        self.amount += amount
+        return ('You have deposited {} into your {} budget.  The balance is now {}.'.format(amount, self.category, self.amount))
 
-    def withdraw(self, account_type, amount):
+    def withdraw(self, amount):
         # subtract an amount from the current balance
-        if account_type == 'savings':
-            self.savings_acct_bal -= amount
-            return(self.savings_acct_bal) 
-        elif account_type == 'checking':
-            self.checking_acct_bal -= amount
-            return(self.checking_acct_bal)
-        else:
-            print('Please select \"savings\" or \"checking\"')
+        self.amount -= amount
+        return ('You withdrawn {} from your {} budget.  The balance is {}.'.format(amount, self.category, self.amount))
 
-    def transfer(self, trans_from_acct, trans_to_acct, amount):
+    def transfer(self, amount, category):
         # transfer an amount from one account to another account
-        if(trans_from_acct == 'savings'):
-            self.savings_acct_bal -= amount
-            self.checking_acct_bal += amount
-        elif(trans_from_acct == 'checking'):
-            self.savings_acct_bal += amount
-            self.checking_acct_bal -= amount
-            print('Transfer complete')
-            print('Savings balance: ' + str(self.savings_acct_bal))
-            print('Checking balance: ' + str(self.checking_acct_bal))
+        if self.check_balance(amount) == True:
+            self.amount -= amount
+            category.amount += amount
+            return('Transfer successful.  Your {} balance is {} and your {} balance is {}'.format(self.category, self.amount, category.category, category.amount))
+        else:
+            return('Insufficient funds to perform this transaction.')
 
-class Category(Budget):
-
-    def debit_transaction(self, amount, account_type):
-        if account_type == 'savings':
-            super().withdraw('savings', amount)
-        elif account_type == 'checking':
-            super().withdraw('checking', amount)
-        
-    def food(self, amount, account_type):
-        self.debit_transaction(amount, account_type)
-        print('%.2f' %amount + ' withdrawn as a food expense from ' + account_type)
- 
-    def clothing(self, amount, account_type):
-        self.debit_transaction(amount, account_type)
-        print('%.2f' %amount + ' withdrawn as a clothing expense from ' + account_type)
-
-    def car(self, amount, account_type):
-        self.debit_transaction(amount, account_type)
-        print('%.2f' %amount + ' withdrawn as a car expense from ' + account_type)
-
-
-obj = Category(34, 753)
-obj.deposit('checking', 345)
-obj.check_balance('checking')
-obj.clothing(34, 'checking')
-obj.check_balance('checking')
-obj.transfer('checking', 'savings', 453)
-
-
-
-
+food_budget = Category('Food', 300)
+car_budget = Category('Car', 1000)
+print(food_budget.withdraw(250))
+print(food_budget.deposit(100))
+print(food_budget.display_balance())
+print(food_budget.transfer(150, car_budget))
